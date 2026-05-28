@@ -38,31 +38,36 @@ const SERVICES = {
 
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
-const GOOGLE_OAUTH_CREDENTIALS = process.env.GOOGLE_OAUTH_CREDENTIALS || "./credentials.json";
 const GOOGLE_OAUTH_TOKEN = process.env.GOOGLE_OAUTH_TOKEN || "./token.json";
 
-function getOAuthClient() {
-  const credentials = JSON.parse(fs.readFileSync(GOOGLE_OAUTH_CREDENTIALS, "utf8"));
-  const config = credentials.web || credentials.installed;
-
-  if (!config) {
-    throw new Error("Invalid OAuth credentials file. It should contain either 'web' or 'installed'.");
+function readJsonFromEnvOrFile(envName, filePath) {
+  if (process.env[envName]) {
+    return JSON.parse(process.env[envName]);
   }
 
-  const redirectUri =
-    config.redirect_uris?.[0] ||
-    `http://localhost:${PORT}/oauth2callback`;
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
 
-  const oAuth2Client = new google.auth.OAuth2(
-    config.client_id,
-    config.client_secret,
-    redirectUri
+function getOAuthClient() {
+  const credentials = readJsonFromEnvOrFile(
+    "GOOGLE_CREDENTIALS_JSON",
+    "./credentials.json"
   );
 
-  if (fs.existsSync(GOOGLE_OAUTH_TOKEN)) {
-    const token = JSON.parse(fs.readFileSync(GOOGLE_OAUTH_TOKEN, "utf8"));
-    oAuth2Client.setCredentials(token);
-  }
+  const token = readJsonFromEnvOrFile(
+    "GOOGLE_TOKEN_JSON",
+    "./token.json"
+  );
+
+  const clientInfo = credentials.installed || credentials.web;
+
+  const oAuth2Client = new google.auth.OAuth2(
+    clientInfo.client_id,
+    clientInfo.client_secret,
+    clientInfo.redirect_uris?.[0]
+  );
+
+  oAuth2Client.setCredentials(token);
 
   return oAuth2Client;
 }
@@ -371,28 +376,34 @@ app.post("/api/book", async (req, res) => {
       notes
     });
 
-    await sendConfirmationEmails({
-      booking: { name, email, phone, service, date, time, notes },
-      event,
-      start,
-      end,
-      addToGoogleLink
-    });
-
     res.status(201).json({
-      message: "Booking confirmed.",
-      booking: {
-        name,
-        email,
-        phone,
-        service,
-        date,
-        time,
-        displayTime: formatDisplayDateTime(start),
-        eventLink: event.htmlLink,
-        addToGoogleLink
-      }
-    });
+  message: "Booking confirmed.",
+  booking: {
+    name,
+    email,
+    phone,
+    service,
+    date,
+    time,
+    displayTime: formatDisplayDateTime(start),
+    eventLink: event.htmlLink,
+    addToGoogleLink
+  }
+});
+
+sendConfirmationEmails({
+  booking: { name, email, phone, service, date, time, notes },
+  event,
+  start,
+  end,
+  addToGoogleLink
+}).catch((emailError) => {
+  console.error("Calendar booking succeeded, but Nodemailer email failed:", {
+    message: emailError.message,
+    code: emailError.code,
+    command: emailError.command
+  });
+});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Booking failed. Please try again." });
