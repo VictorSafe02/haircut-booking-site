@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fresh Cut Studio | Book a Haircut</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="#">
+        <span class="brand-mark">FC</span>
+        <span>Fresh Cut Studio</span>
+      </a>
+      <a class="nav-link" href="#booking">Book now</a>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Premium barber appointments</p>
+        <h1>Book your next fresh trim in seconds.</h1>
+        <p class="hero-text">
+          Pick an available slot, enter your details, and receive an instant confirmation by email and Google Calendar invite.
+        </p>
+        <a class="hero-button" href="#booking">Check availability</a>
+      </div>
+
+      <aside class="hero-card">
+        <p class="card-label">Today’s vibe</p>
+        <h2>Sharp fade. Clean finish.</h2>
+        <p>Haircuts, beard trims, skin fades, and kids cuts.</p>
+        <div class="mini-grid">
+          <span>Fast booking</span>
+          <span>Email confirmation</span>
+          <span>Calendar invite</span>
+          <span>Live availability</span>
+        </div>
+      </aside>
+    </section>
+  </header>
+
+  <main>
+    <section class="services-section" aria-labelledby="services-title">
+      <p class="eyebrow">Services</p>
+      <h2 id="services-title">Choose your cut</h2>
+      <div class="service-cards">
+        <article>
+          <h3>Haircut</h3>
+          <p>Classic cut and clean finish.</p>
+          <strong>€25</strong>
+        </article>
+        <article>
+          <h3>Haircut + Beard</h3>
+          <p>Full grooming session.</p>
+          <strong>€35</strong>
+        </article>
+        <article>
+          <h3>Skin Fade</h3>
+          <p>Sharp fade with detailed blend.</p>
+          <strong>€30</strong>
+        </article>
+        <article>
+          <h3>Kids Haircut</h3>
+          <p>Quick, clean and simple.</p>
+          <strong>€18</strong>
+        </article>
+      </div>
+    </section>
+
+    <section id="booking" class="booking-section" aria-labelledby="booking-title">
+      <div class="booking-intro">
+        <p class="eyebrow">Booking</p>
+        <h2 id="booking-title">Reserve a slot</h2>
+        <p>Select a service and date. Booked times are removed automatically from the list.</p>
+      </div>
+
+      <div class="booking-layout">
+        <form id="bookingForm" class="booking-form">
+          <div class="form-row two-columns">
+            <label>
+              Service
+              <select id="service" name="service" required>
+                <option value="Haircut">Haircut - €25</option>
+                <option value="Haircut + Beard">Haircut + Beard - €35</option>
+                <option value="Skin Fade">Skin Fade - €30</option>
+                <option value="Kids Haircut">Kids Haircut - €18</option>
+              </select>
+            </label>
+
+            <label>
+              Date
+              <input id="date" name="date" type="date" required />
+            </label>
+          </div>
+
+          <section class="slots-box" aria-labelledby="slots-title">
+            <div class="slots-header">
+              <h3 id="slots-title">Available times</h3>
+              <span id="slotsStatus">Choose a date</span>
+            </div>
+            <div id="slots" class="slots"></div>
+            <input id="selectedTime" name="time" type="hidden" required />
+          </section>
+
+          <div class="form-row two-columns">
+            <label>
+              Your name
+              <input name="name" type="text" placeholder="Customer name" required />
+            </label>
+
+            <label>
+              Email
+              <input name="email" type="email" placeholder="customer@email.com" required />
+            </label>
+          </div>
+
+          <label>
+            Phone number
+            <input name="phone" type="tel" placeholder="Optional" />
+          </label>
+
+          <label>
+            Notes
+            <textarea name="notes" rows="4" placeholder="Optional: haircut style, timing notes, etc."></textarea>
+          </label>
+
+          <button id="submitButton" class="submit-button" type="submit">Confirm booking</button>
+          <p id="formMessage" class="form-message" role="status"></p>
+        </form>
+
+        <aside id="confirmationCard" class="confirmation-card hidden">
+          <div class="success-icon">✓</div>
+          <p class="eyebrow">Confirmed</p>
+          <h2>Your booking is locked in.</h2>
+          <p id="confirmationText"></p>
+          <div class="confirmation-actions">
+            <a id="eventLink" target="_blank" rel="noreferrer">Open booking</a>
+            <a id="addToGoogleLink" target="_blank" rel="noreferrer">Add to Google Calendar</a>
+          </div>
+          <button id="newBookingButton" class="secondary-button" type="button">Make another booking</button>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Fresh Cut Studio. Built for simple online haircut bookings.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
